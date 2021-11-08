@@ -1,0 +1,20 @@
+# compiled output
+/api-gateway/.idea
+/api-gateway/dist
+/api-gateway/node_modules
+
+/microservice-flights/dist
+/microservice-flights/node_modules
+
+/microservice-passengers/dist
+/microservice-passengers/node_modules
+
+/microservice-users/dist
+/microservice-users/node_modules
+
+.idea
+.DS_Store
+
+.env
+*.env.development
+

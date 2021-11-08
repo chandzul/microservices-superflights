@@ -1,0 +1,105 @@
+version: '3.7'
+
+services:
+  app:
+    image: app_flights:v2
+    container_name: app_flights
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "80:3000"
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: always
+    networks:
+      - microservice_nestjs
+
+  microservice-flights:
+    image: microservice-flights:v2
+    container_name: microservice-flights
+    build:
+      context: ./microservice-flights
+      dockerfile: Dockerfile
+    env_file: .env
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: always
+    networks:
+      - microservice_nestjs
+
+  microservice-passengers:
+    image: microservice-passengers:v2
+    container_name: microservice-passengers
+    build:
+      context: ./microservice-passengers
+      dockerfile: Dockerfile
+    env_file: .env
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: always
+    networks:
+      - microservice_nestjs
+
+  microservice-users:
+    image: microservice-users:v2
+    container_name: microservice-users
+    build:
+      context: ./microservice-users
+      dockerfile: Dockerfile
+    env_file: .env
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: always
+    networks:
+      - microservice_nestjs
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rmq
+    expose:
+      - 5672
+      - 15672
+    restart: always
+    networks:
+      - microservice_nestjs
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: "admin123"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/data/postgres
+    networks:
+      - microservice_nestjs
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin123"
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - microservice_nestjs
+    restart: unless-stopped
+
+networks:
+  microservice_nestjs:
+#    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
